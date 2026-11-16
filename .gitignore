@@ -1,0 +1,10 @@
+.env
+.adk/
+__pycache__/
+.pytest_cache/
+env/
+.venv/
+venv/
+informes/*
+!informes/informe_ejemplo.md
+logs/
