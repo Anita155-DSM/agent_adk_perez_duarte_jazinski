@@ -17,7 +17,7 @@ from google.adk.models.llm_response import LlmResponse
 from google.adk.runners import InMemoryRunner
 from google.genai import types
 
-from ragnar_agent import tools as t
+from ragnar_agent.tools import tools as t
 from ragnar_agent.agent import INSTRUCCION
 from ragnar_agent.seguridad import (
     antes_de_tool, antes_del_modelo, despues_de_tool, despues_del_modelo)

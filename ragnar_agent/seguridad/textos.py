@@ -1,5 +1,5 @@
 """cositas de texto que usan todos los guardrails"""
-from ..tools import _norm as normalizar  #pasa a minusculas, saca tildes y espacios de mas
+from ..tools.datos import _norm as normalizar  #pasa a minusculas, saca tildes y espacios de mas
 
 __all__ = ["normalizar", "texto_de_contenido", "partes_de_texto"]
 

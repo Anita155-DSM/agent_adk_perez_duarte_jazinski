@@ -18,7 +18,7 @@ existen) se generaron con `scripts/generar_datos_simulados.py` (semilla fija, si
 Esto permite demostrar todos los criterios de aceptación de forma reproducible y sin violar
 las condiciones de acceso de sitios reales. Cada resultado y cada informe lo aclara
 (`tipo_fuente: SIMULADA`). Cambiar la fuente por una real implica reemplazar solo la lectura de
-`ofertas_competencia.csv` en `tools.py`.
+`ofertas_competencia.csv` en `ragnar_agent/tools/datos.py`.
 
 ## ¿Cómo funciona?
 
@@ -59,7 +59,7 @@ Para cada competidor se elige la mejor oferta y se asigna un **veredicto**:
 | `unidad_incompatible` | Unidades que no se pueden convertir (por ejemplo g vs ml) | No |
 | `no_encontrado` | El competidor no lo vende | No (no se inventa ningún precio) |
 
-Una diferencia se marca como **significativa** a partir del 10 % (`UMBRAL_SIGNIFICATIVO` en `tools.py`).
+Una diferencia se marca como **significativa** a partir del 10 % (`UMBRAL_SIGNIFICATIVO` en `ragnar_agent/tools/comparacion.py`).
 Convención: `diferencia = precio del competidor − precio de Ragnar` (positiva = Ragnar es más barato).
 
 ### Validaciones y errores
@@ -144,7 +144,12 @@ agent_adk_perez_duarte_jarzinski/
 ├── ragnar_agent/              # el agente (ADK lo detecta por esta carpeta)
 │   ├── __init__.py
 │   ├── agent.py               # modelo, instrucciones y herramientas
-│   ├── tools.py               # las herramientas y la lógica de comparación
+│   ├── tools/                 # las herramientas y la lógica de comparación
+│   │   ├── __init__.py        # exporta las 6 tools que usa agent.py
+│   │   ├── tools.py           # las tools que ve el modelo
+│   │   ├── datos.py           # lectura de los csv, unidades, monedas y validación de ids
+│   │   ├── comparacion.py     # si es el mismo producto y las cuentas
+│   │   └── informe.py         # arma el texto del informe
 │   ├── .env.example
 │   ├── seguridad/             # guardrails (callbacks de ADK)
 │   │   ├── config.py          # límites, listas de detección y token canario

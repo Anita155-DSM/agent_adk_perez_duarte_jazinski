@@ -10,7 +10,8 @@ import pandas as pd
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from ragnar_agent import tools as t
+from ragnar_agent.tools import datos
+from ragnar_agent.tools import tools as t
 
 TODOS = sorted(t._catalogo()["producto_id"])
 COMPS = sorted(t._ofertas()["competidor"].unique())
@@ -105,7 +106,7 @@ def test_presentacion_diferente_es_referencial_y_por_unidad(analisis):
         c = o["comparacion"]
         assert c["referencial"] and c["base_de_comparacion"] == "precio_unitario"
         row = cat.loc[a["producto_ragnar"]["producto_id"]]
-        esperado, _ = t._unitario(float(row.precio), row.contenido, row.unidad_medida)
+        esperado, _ = datos._unitario(float(row.precio), row.contenido, row.unidad_medida)
         assert math.isclose(c["precio_ragnar"], esperado, abs_tol=0.02)
         n += 1
     assert n > 0

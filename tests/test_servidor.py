@@ -15,9 +15,9 @@ from fastapi.testclient import TestClient
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import servidor
-from ragnar_agent import tools
 from ragnar_agent.seguridad import config
 from ragnar_agent.seguridad.auditoria import registrar
+from ragnar_agent.tools import comparacion, tools
 
 #adk rechaza los pedidos que no vengan de la propia maquina (proteccion contra
 #dns rebinding), por eso el cliente de prueba se presenta como 127.0.0.1
@@ -64,7 +64,7 @@ def test_config_refleja_el_agente_y_los_guardrails(cliente):
     datos = cliente.get("/api/config").json()
     assert datos["app"] == "ragnar_agent" and datos["usuario"] == servidor.USUARIO
     assert datos["max_largo_mensaje"] == config.MAX_LARGO_MENSAJE
-    assert datos["umbral_significativo"] == tools.UMBRAL_SIGNIFICATIVO
+    assert datos["umbral_significativo"] == comparacion.UMBRAL_SIGNIFICATIVO
     assert {"consultar_catalogo", "comparar_precios", "generar_informe"} <= set(datos["herramientas"])
     assert datos["modelo"]
 

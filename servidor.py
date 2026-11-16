@@ -78,8 +78,8 @@ def crear_app(agents_dir: Path = RAIZ, uri_sesiones: str | None = None) -> FastA
     #se importa, y si lo importamos primero queda fijo el modelo por defecto
     envs.load_dotenv_for_agent(NOMBRE_APP, str(agents_dir))
     from ragnar_agent import agent as agente
-    from ragnar_agent import tools
     from ragnar_agent.seguridad import config
+    from ragnar_agent.tools import comparacion, tools
 
     #web=False: queremos solo la api, sin la pantalla de desarrollo de adk.
     #bind_host activa la proteccion de adk contra dns rebinding
@@ -95,7 +95,7 @@ def crear_app(agents_dir: Path = RAIZ, uri_sesiones: str | None = None) -> FastA
             "modelo": agente.MODELO,
             "herramientas": [h.__name__ for h in agente.herramientas],
             "max_largo_mensaje": config.MAX_LARGO_MENSAJE,
-            "umbral_significativo": tools.UMBRAL_SIGNIFICATIVO,
+            "umbral_significativo": comparacion.UMBRAL_SIGNIFICATIVO,
         }
 
     #le dice a la interfaz si ollama esta andando y si el modelo esta descargado
