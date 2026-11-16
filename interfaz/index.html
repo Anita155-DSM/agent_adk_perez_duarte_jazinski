@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Ragnar · Inteligencia de precios</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2306101a'/%3E%3Cpath d='M11 23V9h6.2a4.2 4.2 0 0 1 0 8.4H11m6 0 4.4 5.6' fill='none' stroke='%236ad9cc' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="preload" href="fuentes/familjen-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fuentes/krona-one.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<!-- los iconos (se usan con <svg><use href="#i-nombre">) -->
+<svg class="oculto-svg" aria-hidden="true">
+  <symbol id="i-mas" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></symbol>
+  <symbol id="i-informe" viewBox="0 0 24 24"><path d="M7 3h7l5 5v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></symbol>
+  <symbol id="i-tienda" viewBox="0 0 24 24"><path d="M4 9l1.5-5h13L20 9"/><path d="M4 9a2.67 2.67 0 0 0 5.33 0 2.67 2.67 0 0 0 5.34 0A2.67 2.67 0 0 0 20 9"/><path d="M5.5 12.5V20h13v-7.5M10 20v-4.5h4V20"/></symbol>
+  <symbol id="i-escudo" viewBox="0 0 24 24"><path d="M12 3l7 3v5.5c0 4.5-3 7.8-7 9.5-4-1.700-7-5-7-9.500V6l7-3z"/><path d="M9 12l2.200 2.200L15 10.400"/></symbol>
+  <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3.500" y="4.500" width="17" height="15" rx="3"/><path d="M9.500 4.500v15"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-flecha" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+  <symbol id="i-alto" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2.500" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-cerrar" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-balanza" viewBox="0 0 24 24"><path d="M12 4v16M7 20h10M5 8h14"/><path d="M5 8l-2.500 6a2.700 2.700 0 0 0 5 0L5 8zM19 8l-2.500 6a2.700 2.700 0 0 0 5 0L19 8z"/></symbol>
+  <symbol id="i-lupa" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.500"/><path d="M16 16l4.500 4.500"/></symbol>
+  <symbol id="i-etiqueta" viewBox="0 0 24 24"><path d="M3.500 12.200V5A1.500 1.500 0 0 1 5 3.500h7.200a1.500 1.500 0 0 1 1.060.440l7 7a1.500 1.500 0 0 1 0 2.120l-7.200 7.200a1.500 1.500 0 0 1-2.120 0l-7-7a1.500 1.500 0 0 1-.440-1.060z"/><circle cx="8" cy="8" r="1.300"/></symbol>
+  <symbol id="i-regla" viewBox="0 0 24 24"><rect x="2.500" y="8" width="19" height="8" rx="1.500"/><path d="M6.500 8v3M10 8v4M13.500 8v3M17 8v4"/></symbol>
+  <symbol id="i-globo" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.800 3 2.800 15 0 18M12 3c-2.800 3-2.800 15 0 18"/></symbol>
+  <symbol id="i-rayo" viewBox="0 0 24 24"><path d="M13 3L5 13.500h6L10 21l8-10.500h-6L13 3z"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-volver" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="i-refrescar" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.300 6.300"/><path d="M20 4v7h-7"/></symbol>
+  <symbol id="i-persona" viewBox="0 0 24 24"><circle cx="12" cy="8.500" r="3.500"/><path d="M5 20c1-4 4-5.500 7-5.500s6 1.500 7 5.500"/></symbol>
+</svg>
+
+<!-- aca vidrio.js mete los filtros de refraccion (solo en navegadores chromium) -->
+<svg class="oculto-svg" aria-hidden="true"><defs id="filtros-lente"></defs></svg>
+
+<!-- el fondo: unas luces tipo aurora que se mueven despacito atras del vidrio -->
+<div class="aurora" aria-hidden="true">
+  <i class="luz luz-1"></i>
+  <i class="luz luz-2"></i>
+  <i class="luz luz-3"></i>
+  <i class="grano"></i>
+</div>
+
+<div class="app" id="app">
+
+  <aside class="lateral vidrio" id="lateral" aria-label="Barra lateral">
+    <div class="lateral-cabecera">
+      <a class="marca" href="#/" aria-label="Ragnar, nueva consulta"><span class="sello">R</span><span class="marca-nombre">Ragnar</span></a>
+      <button class="boton-icono" id="boton-plegar" type="button" aria-label="Ocultar la barra lateral" title="Ocultar la barra lateral">
+        <svg class="icono"><use href="#i-panel"/></svg>
+      </button>
+    </div>
+
+    <a class="nueva-consulta cristal" href="#/" id="nueva-consulta">
+      <svg class="icono"><use href="#i-mas"/></svg>
+      <span>Nueva consulta</span>
+      <span class="teclas"><kbd>Ctrl</kbd><kbd>K</kbd></span>
+    </a>
+
+    <nav class="navegacion" aria-label="Secciones">
+      <a href="#/informes" data-seccion="informes"><svg class="icono"><use href="#i-informe"/></svg><span>Informes</span></a>
+      <a href="#/competidores" data-seccion="competidores"><svg class="icono"><use href="#i-tienda"/></svg><span>Competidores</span></a>
+      <a href="#/auditoria" data-seccion="auditoria"><svg class="icono"><use href="#i-escudo"/></svg><span>Auditoría</span></a>
+    </nav>
+
+    <h2 class="lateral-titulo">Consultas</h2>
+    <ul class="consultas" id="lista-consultas"></ul>
+
+    <div class="lateral-pie">
+      <span class="avatar"><svg class="icono"><use href="#i-persona"/></svg></span>
+      <span>Área comercial</span>
+    </div>
+  </aside>
+
+  <main class="principal">
+    <header class="barra">
+      <button class="boton-icono" id="boton-menu" type="button" aria-label="Mostrar la barra lateral" title="Mostrar la barra lateral">
+        <svg class="icono"><use href="#i-menu"/></svg>
+      </button>
+      <div class="barra-titulo" id="barra-titulo"></div>
+      <div class="estado-modelo cristal" id="estado-modelo" data-estado="cargando">
+        <i class="punto"></i><span id="estado-modelo-texto">Conectando…</span>
+      </div>
+    </header>
+
+    <!-- la consulta: se ve la portada (si no hay mensajes) o la charla (si hay) -->
+    <section class="vista vista-consulta" id="vista-consulta" data-modo="portada">
+      <div class="conversacion" id="conversacion">
+        <div class="mensajes" id="mensajes" aria-live="polite"></div>
+      </div>
+
+      <div class="portada">
+        <h1 class="logotipo">RAGNAR</h1>
+        <p class="lema">Inteligencia de precios frente a la competencia</p>
+      </div>
+
+      <div class="muelle" id="muelle">
+        <form class="compositor vidrio lente" id="compositor">
+          <label class="solo-lectores" for="entrada">Tu consulta para el agente</label>
+          <textarea id="entrada" rows="1" autocomplete="off" spellcheck="true"
+                    placeholder="Preguntá por un producto, una marca o un competidor…"></textarea>
+          <div class="compositor-pie">
+            <span class="contador" id="contador" aria-live="polite"></span>
+            <span class="modelo" id="modelo" title="Modelo de Ollama que usa el agente"></span>
+            <button class="enviar" id="enviar" type="submit" aria-label="Enviar consulta" disabled>
+              <svg class="icono"><use id="enviar-icono" href="#i-flecha"/></svg>
+            </button>
+          </div>
+        </form>
+
+        <div class="bandeja" id="bandeja">
+          <a href="#/competidores"><svg class="icono"><use href="#i-tienda"/></svg><span id="bandeja-competidores">Competidores</span></a>
+          <a href="#/auditoria"><svg class="icono"><use href="#i-escudo"/></svg><span>Guardrails activos</span></a>
+          <span class="bandeja-dato" id="bandeja-herramientas"></span>
+        </div>
+
+        <p class="aviso-modelo" id="aviso-modelo" hidden></p>
+
+        <div class="atajos" id="atajos" aria-label="Consultas de ejemplo"></div>
+      </div>
+
+      <p class="aviso-pie">Los precios de la competencia son datos SIMULADOS de práctica · Ragnar S.A.</p>
+    </section>
+
+    <section class="vista vista-pagina" id="vista-informes" hidden></section>
+    <section class="vista vista-pagina" id="vista-competidores" hidden></section>
+    <section class="vista vista-pagina" id="vista-auditoria" hidden></section>
+  </main>
+</div>
+
+<div class="velo" id="velo" hidden></div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
